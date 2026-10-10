@@ -1,0 +1,13 @@
+{
+  "name": "oneclick-demo-compose",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OneClick 시연 앱: 방문자 수를 Postgres에 저장 (재배포·롤백해도 숫자 유지)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "pg": "8.23.0"
+  }
+}
