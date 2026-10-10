@@ -1,17 +1,26 @@
-FROM node:22-bookworm-slim
+FROM node:20-bookworm-slim
 
-ENV NODE_ENV=production \
-    PORT=3000
+# Create app directory
+WORKDIR /usr/src/app
 
-WORKDIR /app
-
+# Install dependencies deterministically using the lockfile.
+# Copy package files first to leverage Docker layer caching.
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev && npm cache clean --force
 
-COPY --chown=node:node server.js ./
+# Install production dependencies only
+RUN npm ci --only=production --no-audit --no-fund
 
+# Copy application source
+COPY --chown=node:node . .
+
+# Use a non-root user provided by the Node image
 USER node
 
+# Ensure environment is production by default
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Expose the application's port and run the server bound to 0.0.0.0 (server.js already respects PORT)
 EXPOSE 3000
 
 CMD ["node", "server.js"]
